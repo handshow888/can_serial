@@ -9,7 +9,7 @@
 波特率1000000  
 字节存储使用小端模式  
 
-已在Jetson orin nx上测试通过，理论上来讲其他拥有can通信硬件条件的设备也可使用（未测试）。
+已在 **Jetson orin nx** 和 **OrangePi 5 Pro** 上测试通过，理论上来讲其他拥有can通信硬件条件的设备也可使用（未测试）。
 
 ## include
 包含can和ros2头文件声明和can定义  
@@ -24,6 +24,25 @@ can通信的接收处理函数绑定必须在ros2创建完发布者之后，不�
 
 ## 使用说明
 先运行scripts目录下的脚本`setup_can_autostart.sh`，将 jetson orin 设备的 can0 设备设置为开机自启。然后编译运行即可
+
+## 本地回环测试can功能
+(该测试与本代码无关，只是对设备的can接口进行测试)
+```bash
+sudo ip link set can0 down
+sudo ip link set can0 type can bitrate 1000000 loopback on
+sudo ip link set can0 up
+
+# 终端1
+candump can0
+# 终端2
+cansend can0 123#DEADBEEF
+```
+### 实际使用需关闭本地回环模式
+```bash
+sudo ip link set can0 down
+sudo ip link set can0 type can bitrate 1000000 loopback off
+sudo ip link set can0 up
+```
 
 ## 示例通信协议
 ### 下位机->上位机(帧头0xA0)

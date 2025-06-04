@@ -25,7 +25,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c "while true; do if ip link show can0 >/dev/null 2>&1; then echo '找到 can0 设备，正在尝试启动...'; if ip link set can0 type can bitrate 1000000 && ip link set can0 up; then echo 'can0 成功启动！'; break; else echo '启动 can0 失败，将在0.5秒后重试...'; sleep 0.5; fi; else echo '等待 can0 设备出现...'; sleep 0.5; fi; done"
+ExecStart=/bin/bash -c "while true; do if ip link show can0 >/dev/null 2>&1; then echo '找到 can0 设备，正在尝试启动...'; if ip link set can0 type can bitrate 1000000 loopback off && ip link set can0 up; then echo 'can0 成功启动！'; break; else echo '启动 can0 失败，将在0.5秒后重试...'; sleep 0.5; fi; else echo '等待 can0 设备出现...'; sleep 0.5; fi; done"
 RemainAfterExit=yes
 
 [Install]
