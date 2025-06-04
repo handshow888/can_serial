@@ -1,32 +1,31 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.0.2)
 set(CMAKE_CXX_STANDARD 17)
 project(can_serial)
 
-find_package(ament_cmake_auto REQUIRED)
-ament_auto_find_build_dependencies()
+set(CMAKE_BUILD_TYPE Release)
 
-set(Boost_COMPONENTS system)
-find_package(Boost REQUIRED ${Boost_COMPONENTS})
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  # boost
+  std_msgs
+)
 
-ament_auto_add_library(${PROJECT_NAME} SHARED
+catkin_package(
+  CATKIN_DEPENDS
+  roscpp
+  # boost
+  std_msgs
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+
+add_executable(can_serial_node 
   src/CanSerialNode.cpp
   src/CanSerialCore.cpp
 )
-
-target_link_libraries(${PROJECT_NAME}
-  ${Boost_LIBRARIES}
-)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-  include
-  ${Boost_INCLUDE_DIRS}
-)
-
-rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN "CanSerialNode"
-  EXECUTABLE ${PROJECT_NAME}_node
-)
-
-ament_auto_package(
-  INSTALL_TO_SHARE
+target_link_libraries(can_serial_node
+  ${catkin_LIBRARIES}
 )
